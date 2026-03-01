@@ -338,6 +338,38 @@
 
 .useTag:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
 
+/* Footer specific to element page */
+.elementFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.donateLink {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+}
+
+.donateLink:hover {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  background: rgba(0,212,255,0.05);
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .sidebarToggle { display: flex; }
@@ -445,4 +477,26 @@
   border: 1px solid var(--border-subtle);
   z-index: 1010;
   box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.fullscreenShortcuts {
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  z-index: 1010;
+}
+
+.fullscreenShortcuts kbd {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
 }

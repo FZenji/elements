@@ -91,6 +91,7 @@ function ElectronShell({
   is3D,
   isPlaying,
   color,
+  speed,
 }: {
   shellIndex: number;
   electronCount: number;
@@ -103,7 +104,7 @@ function ElectronShell({
   const groupRef = useRef<THREE.Group>(null);
   const electronsRef = useRef<THREE.Group>(null);
   const col = new THREE.Color(color);
-  const speed = 0.8 / (shellIndex + 1);
+  const shellSpeed = 0.8 / (shellIndex + 1);
   const tiltX = is3D ? (shellIndex * Math.PI) / (shellIndex + 3) : 0;
   const tiltZ = is3D ? (shellIndex * Math.PI) / 4 : 0;
 
@@ -117,10 +118,21 @@ function ElectronShell({
     return pts;
   }, [radius]);
 
+  // Set ring rotation speed (outer rings rotate slower)
+  const ringSpeed = 0.2 / (shellIndex + 1);
+
   useFrame((state, delta) => {
     if (!isPlaying) return;
+    
+    // Rotate the entire shell (the ring)
+    if (groupRef.current && is3D) {
+      groupRef.current.rotation.x += delta * ringSpeed * speed;
+      groupRef.current.rotation.y += delta * ringSpeed * speed;
+    }
+
+    // Rotate the electrons along the ring
     if (electronsRef.current) {
-      electronsRef.current.rotation.z += delta * speed * speed; // First speed is local multiplier, second is prop
+      electronsRef.current.rotation.z += delta * shellSpeed * speed;
     }
   });
 

@@ -62,17 +62,6 @@ export default function RootLayout({
       </head>
       <body>
         {children}
-        <footer className="site-footer">
-          <p>Developed by Henry Tolenaar</p>
-          <a
-            href="https://ko-fi.com/henrytolenaar"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="donate-link"
-          >
-            ☕ Support this project
-          </a>
-        </footer>
       </body>
     </html>
   );

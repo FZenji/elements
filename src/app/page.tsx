@@ -66,7 +66,7 @@ function getCategoryColor(cat: ElementCategory): string {
 }
 
 export default function HomePage() {
-  const [activeFilter, setActiveFilter] = useState<ElementCategory | null>(null);
+  const [activeFilters, setActiveFilters] = useState<ElementCategory[]>([]);
   const [hoveredElement, setHoveredElement] = useState<ElementData | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -81,15 +81,21 @@ export default function HomePage() {
     if (e.key === 'Escape') setShowShortcuts(false);
     if (e.key === 'f' && !e.ctrlKey && !e.metaKey) {
       e.preventDefault();
-      setActiveFilter(f => f ? null : categoryKeys[0]);
+      setActiveFilters(f => f.length > 0 ? [] : [categoryKeys[0]]);
     }
     if (e.key >= '1' && e.key <= '9' && !e.ctrlKey) {
       const idx = parseInt(e.key) - 1;
       if (idx < categoryKeys.length) {
-        setActiveFilter(f => f === categoryKeys[idx] ? null : categoryKeys[idx]);
+        setActiveFilters(f => {
+          const cat = categoryKeys[idx];
+          if (e.shiftKey) {
+            return f.includes(cat) ? f.filter(c => c !== cat) : [...f, cat];
+          }
+          return f.includes(cat) && f.length === 1 ? [] : [cat];
+        });
       }
     }
-    if (e.key === '0') setActiveFilter(null);
+    if (e.key === '0') setActiveFilters([]);
   }, []);
 
   useEffect(() => {
@@ -160,16 +166,22 @@ export default function HomePage() {
       {/* Filter Controls */}
       <div className={styles.filters}>
         <button
-          className={`${styles.filterBtn} ${activeFilter === null ? styles.filterActive : ''}`}
-          onClick={() => setActiveFilter(null)}
+          className={`${styles.filterBtn} ${activeFilters.length === 0 ? styles.filterActive : ''}`}
+          onClick={() => setActiveFilters([])}
         >
           All
         </button>
         {categoryKeys.map((cat) => (
           <button
             key={cat}
-            className={`${styles.filterBtn} ${activeFilter === cat ? styles.filterActive : ''}`}
-            onClick={() => setActiveFilter(f => f === cat ? null : cat)}
+            className={`${styles.filterBtn} ${activeFilters.includes(cat) ? styles.filterActive : ''}`}
+            onClick={(e) => {
+              if (e.shiftKey) {
+                setActiveFilters(f => f.includes(cat) ? f.filter(c => c !== cat) : [...f, cat]);
+              } else {
+                setActiveFilters(f => f.includes(cat) && f.length === 1 ? [] : [cat]);
+              }
+            }}
             style={{
               '--cat-color': getCategoryColor(cat),
             } as React.CSSProperties}
@@ -190,7 +202,7 @@ export default function HomePage() {
             const pos = GRID_POSITIONS[el.number];
             if (!pos) return null;
             const [row, col] = pos;
-            const isFiltered = activeFilter && el.category !== activeFilter;
+            const isFiltered = activeFilters.length > 0 && !activeFilters.includes(el.category);
             const isSearchMatch = filteredBySearch ? filteredBySearch.includes(el) : true;
             const dimmed = isFiltered || !isSearchMatch;
 

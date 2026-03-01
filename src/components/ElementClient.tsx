@@ -44,12 +44,29 @@ export default function ElementClient({ element }: { element: ElementData }) {
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.target instanceof HTMLInputElement) return;
+
+    if (e.key === 'Escape') {
+      if (isFullscreen) {
+        setIsFullscreen(false);
+      } else {
+        router.push('/');
+      }
+      return;
+    }
+
     if (e.key === ' ') { e.preventDefault(); setIsPlaying(p => !p); }
     if (e.key === 'd' || e.key === 'D') setIs3D(d => !d);
-    if (e.key === 'ArrowLeft' && prevEl) router.push(`/${prevEl.slug}`);
-    if (e.key === 'ArrowRight' && nextEl) router.push(`/${nextEl.slug}`);
-    if (e.key === 'Escape' || e.key === 'h' || e.key === 'H') router.push('/');
-  }, [prevEl, nextEl, router]);
+    
+    // Allow speed adjustment globally or just when fullscreen if prefer:
+    if (e.key === ']') setSpeed(s => Math.min(s * 2, 8));
+    if (e.key === '[') setSpeed(s => Math.max(s / 2, 0.125));
+
+    if (!isFullscreen) {
+      if (e.key === 'ArrowLeft' && prevEl) router.push(`/${prevEl.slug}`);
+      if (e.key === 'ArrowRight' && nextEl) router.push(`/${nextEl.slug}`);
+      if (e.key === 'h' || e.key === 'H') router.push('/');
+    }
+  }, [prevEl, nextEl, router, isFullscreen]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -269,6 +286,19 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </div>
           </motion.section>
         </div>
+
+        {/* Local Footer (replaces global footer layout) */}
+        <footer className={styles.elementFooter}>
+          <p>Developed by Henry Tolenaar</p>
+          <a
+            href="https://ko-fi.com/henrytolenaar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.donateLink}
+          >
+            ☕ Support this project
+          </a>
+        </footer>
         </main>
 
         {/* Right TOC Sidebar */}
@@ -305,6 +335,12 @@ export default function ElementClient({ element }: { element: ElementData }) {
               speed={speed}
               enableControls={true}
             />
+            <div className={styles.fullscreenShortcuts}>
+              <div><kbd>Space</kbd> Play / Pause</div>
+              <div><kbd>D</kbd> Toggle 2D / 3D</div>
+              <div><kbd>[</kbd> <kbd>]</kbd> Adjust Speed</div>
+              <div><kbd>Esc</kbd> Close</div>
+            </div>
           </div>
           <div className={styles.fullscreenControls}>
             <button
