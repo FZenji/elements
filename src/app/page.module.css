@@ -1,5 +1,7 @@
 .container {
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   position: relative;
   overflow-x: hidden;
 }
@@ -242,6 +244,12 @@
 .tooltipSymbol { font-size: 2rem; font-weight: 800; line-height: 1; }
 .tooltipName { font-weight: 600; font-size: 1rem; }
 .tooltipCategory { font-size: 0.75rem; color: var(--text-muted); }
+
+.tooltipAtom {
+  margin: 0.5rem 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
 
 .tooltipDesc {
   font-size: 0.8rem;

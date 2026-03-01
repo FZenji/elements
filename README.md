@@ -54,10 +54,6 @@ src/
     └── elements.ts   # All 118 elements with properties
 ```
 
-## 🎨 Favicon Prompt
-
-> A minimalist atomic symbol icon on a pure black background. A small glowing cyan nucleus at the center with two thin orbital rings crossing at angles, each with a tiny bright dot representing an electron. The orbits should glow with a gradient from cyan (#00D4FF) to purple (#7B2FBE). Ultra-clean, geometric, suitable for a 32×32 and 512×512 favicon. No text.
-
 ---
 
 Developed by **Henry Tolenaar**

@@ -2,9 +2,12 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { elements, CATEGORIES, ElementCategory, ElementData } from '@/data/elements';
 import styles from './page.module.css';
+
+const AtomVisualization = dynamic(() => import('@/components/AtomVisualization'), { ssr: false });
 
 // Standard periodic table layout positions
 const GRID_POSITIONS: Record<number, [number, number]> = {};
@@ -257,6 +260,16 @@ export default function HomePage() {
                   {CATEGORIES[hoveredElement.category].label}
                 </div>
               </div>
+            </div>
+            <div className={styles.tooltipAtom}>
+              <AtomVisualization
+                electronsPerShell={hoveredElement.electronsPerShell}
+                is3D={false}
+                isPlaying={true}
+                color={getCategoryColor(hoveredElement.category)}
+                height="120px"
+                compact={true}
+              />
             </div>
             <p className={styles.tooltipDesc}>{hoveredElement.description}</p>
             <div className={styles.tooltipMeta}>

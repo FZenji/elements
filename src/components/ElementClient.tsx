@@ -58,12 +58,13 @@ export default function ElementClient({ element }: { element: ElementData }) {
       )
     : elements;
 
-  // Group elements by category for sidebar
   const grouped = filteredElements.reduce((acc, el) => {
     if (!acc[el.category]) acc[el.category] = [];
     acc[el.category].push(el);
     return acc;
   }, {} as Record<string, ElementData[]>);
+
+  const wikiUrl = `https://en.wikipedia.org/wiki/${element.name}`;
 
   return (
     <div className={styles.layout}>
@@ -118,17 +119,17 @@ export default function ElementClient({ element }: { element: ElementData }) {
 
       {/* Main Content */}
       <main className={styles.main}>
-        {/* Top bar */}
+        {/* Top bar — single back + nav arrows */}
         <div className={styles.topBar}>
-          <Link href="/" className={styles.backBtn}>
-            ← Back to Table
-          </Link>
           <div className={styles.navArrows}>
             {prevEl && (
               <Link href={`/${prevEl.slug}`} className={styles.navArrow} title={prevEl.name}>
                 ← {prevEl.symbol}
               </Link>
             )}
+            <Link href="/" className={styles.navArrow} title="Back to Periodic Table">
+              ⌂ Table
+            </Link>
             {nextEl && (
               <Link href={`/${nextEl.slug}`} className={styles.navArrow} title={nextEl.name}>
                 {nextEl.symbol} →
@@ -156,6 +157,14 @@ export default function ElementClient({ element }: { element: ElementData }) {
               <span className={styles.badge}>{element.phase}</span>
               <span className={styles.badge}>{element.electronConfig}</span>
             </div>
+            <a
+              href={wikiUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.wikiLink}
+            >
+              Read more on Wikipedia ↗
+            </a>
           </div>
 
           <div className={styles.heroViz}>
@@ -191,77 +200,30 @@ export default function ElementClient({ element }: { element: ElementData }) {
 
         {/* Information Sections */}
         <div className={styles.sections}>
-          {/* Overview */}
-          <motion.section
-            className={styles.section}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
+          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <h2 className={styles.sectionTitle}>Overview</h2>
             <div className={styles.grid}>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Atomic Number</span>
-                <span className={styles.statValue} style={{ color }}>{element.number}</span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Atomic Mass</span>
-                <span className={styles.statValue}>{element.mass} u</span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Period</span>
-                <span className={styles.statValue}>{element.period}</span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Group</span>
-                <span className={styles.statValue}>{element.group || '—'}</span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Category</span>
-                <span className={styles.statValue}>{CATEGORIES[element.category].label}</span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Phase</span>
-                <span className={styles.statValue}>{element.phase}</span>
-              </div>
+              <div className={styles.stat}><span className={styles.statLabel}>Atomic Number</span><span className={styles.statValue} style={{ color }}>{element.number}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Atomic Mass</span><span className={styles.statValue}>{element.mass} u</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Period</span><span className={styles.statValue}>{element.period}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Group</span><span className={styles.statValue}>{element.group || '—'}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Category</span><span className={styles.statValue}>{CATEGORIES[element.category].label}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Phase</span><span className={styles.statValue}>{element.phase}</span></div>
             </div>
           </motion.section>
 
-          {/* Atomic Properties */}
-          <motion.section
-            className={styles.section}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-          >
+          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
             <h2 className={styles.sectionTitle}>Atomic Properties</h2>
             <div className={styles.grid}>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Electron Configuration</span>
-                <span className={styles.statValue} style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem' }}>
-                  {element.electronConfig}
-                </span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Electrons per Shell</span>
-                <span className={styles.statValue} style={{ fontFamily: 'var(--font-mono)' }}>
-                  {element.electronsPerShell.join(', ')}
-                </span>
-              </div>
+              <div className={styles.stat}><span className={styles.statLabel}>Electron Configuration</span><span className={styles.statValue} style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem' }}>{element.electronConfig}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Electrons per Shell</span><span className={styles.statValue} style={{ fontFamily: 'var(--font-mono)' }}>{element.electronsPerShell.join(', ')}</span></div>
             </div>
-            {/* Shell visualization */}
             <div className={styles.shellViz}>
               {element.electronsPerShell.map((count, i) => (
                 <div key={i} className={styles.shellBar}>
                   <span className={styles.shellLabel}>Shell {i + 1}</span>
                   <div className={styles.shellBarTrack}>
-                    <div
-                      className={styles.shellBarFill}
-                      style={{
-                        width: `${(count / 32) * 100}%`,
-                        background: color,
-                      }}
-                    />
+                    <div className={styles.shellBarFill} style={{ width: `${(count / 32) * 100}%`, background: color }} />
                   </div>
                   <span className={styles.shellCount}>{count}e⁻</span>
                 </div>
@@ -269,72 +231,34 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </div>
           </motion.section>
 
-          {/* Physical Properties */}
-          <motion.section
-            className={styles.section}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
+          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <h2 className={styles.sectionTitle}>Physical Properties</h2>
             <div className={styles.grid}>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Density</span>
-                <span className={styles.statValue}>
-                  {element.density ? `${element.density} g/cm³` : 'Unknown'}
-                </span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Melting Point</span>
-                <span className={styles.statValue}>{formatTemp(element.meltingPoint)}</span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Boiling Point</span>
-                <span className={styles.statValue}>{formatTemp(element.boilingPoint)}</span>
-              </div>
+              <div className={styles.stat}><span className={styles.statLabel}>Density</span><span className={styles.statValue}>{element.density ? `${element.density} g/cm³` : 'Unknown'}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Melting Point</span><span className={styles.statValue}>{formatTemp(element.meltingPoint)}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Boiling Point</span><span className={styles.statValue}>{formatTemp(element.boilingPoint)}</span></div>
             </div>
           </motion.section>
 
-          {/* History */}
-          <motion.section
-            className={styles.section}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-          >
+          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
             <h2 className={styles.sectionTitle}>History & Discovery</h2>
             <div className={styles.grid}>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Discovered By</span>
-                <span className={styles.statValue}>{element.discoverer}</span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Year Discovered</span>
-                <span className={styles.statValue}>{element.yearDiscovered}</span>
-              </div>
+              <div className={styles.stat}><span className={styles.statLabel}>Discovered By</span><span className={styles.statValue}>{element.discoverer}</span></div>
+              <div className={styles.stat}><span className={styles.statLabel}>Year Discovered</span><span className={styles.statValue}>{element.yearDiscovered}</span></div>
             </div>
           </motion.section>
 
-          {/* Uses */}
-          <motion.section
-            className={styles.section}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
+          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <h2 className={styles.sectionTitle}>Applications & Uses</h2>
             <div className={styles.usesList}>
               {element.uses.map((use, i) => (
-                <span key={i} className={styles.useTag} style={{ borderColor: `${color}40` }}>
-                  {use}
-                </span>
+                <span key={i} className={styles.useTag} style={{ borderColor: `${color}40` }}>{use}</span>
               ))}
             </div>
           </motion.section>
         </div>
       </main>
 
-      {/* Sidebar backdrop for mobile */}
       {sidebarOpen && (
         <div className={styles.sidebarBackdrop} onClick={() => setSidebarOpen(false)} />
       )}

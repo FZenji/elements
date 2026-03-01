@@ -12,11 +12,12 @@ interface AtomSceneProps {
   color?: string;
 }
 
-function Nucleus({ color }: { color: string }) {
+function Nucleus({ color, isPlaying }: { color: string; isPlaying: boolean }) {
   const ref = useRef<THREE.Group>(null);
   const col = new THREE.Color(color);
 
   useFrame((_, delta) => {
+    if (!isPlaying) return;
     if (ref.current) {
       ref.current.rotation.x += delta * 0.3;
       ref.current.rotation.y += delta * 0.5;
@@ -25,7 +26,6 @@ function Nucleus({ color }: { color: string }) {
 
   return (
     <group ref={ref}>
-      {/* Proton cluster */}
       {[...Array(6)].map((_, i) => {
         const phi = Math.acos(-1 + (2 * i + 1) / 6);
         const theta = Math.sqrt(6 * Math.PI) * phi;
@@ -43,7 +43,6 @@ function Nucleus({ color }: { color: string }) {
           </mesh>
         );
       })}
-      {/* Glow */}
       <mesh>
         <sphereGeometry args={[0.35, 16, 16]} />
         <meshStandardMaterial color={col} transparent opacity={0.15} emissive={col} emissiveIntensity={0.3} />
@@ -74,7 +73,6 @@ function ElectronShell({
   const tiltX = is3D ? (shellIndex * Math.PI) / (shellIndex + 3) : 0;
   const tiltZ = is3D ? (shellIndex * Math.PI) / 4 : 0;
 
-  // Orbit ring points
   const orbitPoints = useMemo(() => {
     const pts: [number, number, number][] = [];
     const segs = 64;
@@ -94,10 +92,7 @@ function ElectronShell({
 
   return (
     <group ref={groupRef} rotation={[tiltX, 0, tiltZ]}>
-      {/* Orbit ring */}
       <Line points={orbitPoints} color={col} transparent opacity={0.15} lineWidth={1} />
-
-      {/* Electrons */}
       <group ref={electronsRef}>
         {Array.from({ length: electronCount }).map((_, i) => {
           const angle = (i / electronCount) * Math.PI * 2;
@@ -127,7 +122,7 @@ function AtomScene({ electronsPerShell, is3D, isPlaying, color = '#00d4ff' }: At
       <pointLight position={[5, 5, 5]} intensity={0.8} />
       <pointLight position={[-5, -5, -5]} intensity={0.3} color={color} />
 
-      <Nucleus color={color} />
+      <Nucleus color={color} isPlaying={isPlaying} />
 
       {electronsPerShell.map((count, i) => (
         <ElectronShell
@@ -150,6 +145,7 @@ interface AtomVisualizationProps {
   isPlaying: boolean;
   color?: string;
   height?: string;
+  compact?: boolean;
 }
 
 export default function AtomVisualization({
@@ -158,14 +154,16 @@ export default function AtomVisualization({
   isPlaying,
   color = '#00d4ff',
   height = '350px',
+  compact = false,
 }: AtomVisualizationProps) {
   const maxShells = electronsPerShell.length;
-  const camZ = 2 + maxShells * 0.8;
+  // For compact mode (hover previews), zoom in more
+  const camZ = compact ? 2.5 + maxShells * 0.4 : 2 + maxShells * 0.6;
 
   return (
     <div style={{ width: '100%', height, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <Canvas
-        camera={{ position: [0, 0, camZ], fov: 50 }}
+        camera={{ position: [0, 0, camZ], fov: compact ? 45 : 40 }}
         gl={{ antialias: true, alpha: true }}
         style={{ background: 'transparent' }}
       >

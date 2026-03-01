@@ -6,6 +6,15 @@ export const metadata: Metadata = {
   description: "Explore the periodic table of elements with interactive 3D atom visualizations, detailed information, and beautiful animations. Built by Henry Tolenaar.",
   keywords: ["periodic table", "elements", "chemistry", "atoms", "3D visualization", "interactive"],
   authors: [{ name: "Henry Tolenaar" }],
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "Elements — Interactive Periodic Table",
     description: "Explore all 118 elements with interactive 3D atom visualizations and detailed information.",
@@ -54,10 +63,15 @@ export default function RootLayout({
       <body>
         {children}
         <footer className="site-footer">
-          <p>
-            Crafted by{" "}
-            <span className="gradient-text">Henry Tolenaar</span>
-          </p>
+          <p>Developed by Henry Tolenaar</p>
+          <a
+            href="https://ko-fi.com/henrytolenaar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="donate-link"
+          >
+            ☕ Support this project
+          </a>
         </footer>
       </body>
     </html>
