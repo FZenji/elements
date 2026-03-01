@@ -117,26 +117,27 @@ export default function ElementClient({ element }: { element: ElementData }) {
         </nav>
       </aside>
 
-      {/* Main Content */}
-      <main className={styles.main}>
-        {/* Top bar — single back + nav arrows */}
-        <div className={styles.topBar}>
-          <div className={styles.navArrows}>
-            {prevEl && (
-              <Link href={`/${prevEl.slug}`} className={styles.navArrow} title={prevEl.name}>
-                ← {prevEl.symbol}
-              </Link>
-            )}
+      {/* Main Content and TOC */}
+      <div className={styles.layoutWrapper}>
+        <main className={styles.main}>
+          {/* Top bar — back on left + nav arrows on right */}
+          <div className={styles.topBar}>
             <Link href="/" className={styles.navArrow} title="Back to Periodic Table">
-              ⌂ Table
+              ⌂ Back to Table
             </Link>
-            {nextEl && (
-              <Link href={`/${nextEl.slug}`} className={styles.navArrow} title={nextEl.name}>
-                {nextEl.symbol} →
-              </Link>
-            )}
+            <div className={styles.navArrows}>
+              {prevEl && (
+                <Link href={`/${prevEl.slug}`} className={styles.navArrow} title={prevEl.name}>
+                  ← {prevEl.symbol}
+                </Link>
+              )}
+              {nextEl && (
+                <Link href={`/${nextEl.slug}`} className={styles.navArrow} title={nextEl.name}>
+                  {nextEl.symbol} →
+                </Link>
+              )}
+            </div>
           </div>
-        </div>
 
         {/* Hero Section */}
         <motion.div
@@ -200,7 +201,7 @@ export default function ElementClient({ element }: { element: ElementData }) {
 
         {/* Information Sections */}
         <div className={styles.sections}>
-          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <motion.section id="overview" className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <h2 className={styles.sectionTitle}>Overview</h2>
             <div className={styles.grid}>
               <div className={styles.stat}><span className={styles.statLabel}>Atomic Number</span><span className={styles.statValue} style={{ color }}>{element.number}</span></div>
@@ -212,7 +213,7 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </div>
           </motion.section>
 
-          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+          <motion.section id="atomic-properties" className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
             <h2 className={styles.sectionTitle}>Atomic Properties</h2>
             <div className={styles.grid}>
               <div className={styles.stat}><span className={styles.statLabel}>Electron Configuration</span><span className={styles.statValue} style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem' }}>{element.electronConfig}</span></div>
@@ -231,7 +232,7 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </div>
           </motion.section>
 
-          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <motion.section id="physical-properties" className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <h2 className={styles.sectionTitle}>Physical Properties</h2>
             <div className={styles.grid}>
               <div className={styles.stat}><span className={styles.statLabel}>Density</span><span className={styles.statValue}>{element.density ? `${element.density} g/cm³` : 'Unknown'}</span></div>
@@ -240,7 +241,7 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </div>
           </motion.section>
 
-          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+          <motion.section id="history-discovery" className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
             <h2 className={styles.sectionTitle}>History & Discovery</h2>
             <div className={styles.grid}>
               <div className={styles.stat}><span className={styles.statLabel}>Discovered By</span><span className={styles.statValue}>{element.discoverer}</span></div>
@@ -248,7 +249,7 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </div>
           </motion.section>
 
-          <motion.section className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+          <motion.section id="applications-uses" className={styles.section} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <h2 className={styles.sectionTitle}>Applications & Uses</h2>
             <div className={styles.usesList}>
               {element.uses.map((use, i) => (
@@ -257,7 +258,20 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </div>
           </motion.section>
         </div>
-      </main>
+        </main>
+
+        {/* Right TOC Sidebar */}
+        <aside className={styles.tocSidebar}>
+          <div className={styles.tocTitle}>On this page</div>
+          <nav className={styles.tocNav}>
+            <a href="#overview" className={styles.tocLink}>Overview</a>
+            <a href="#atomic-properties" className={styles.tocLink}>Atomic Properties</a>
+            <a href="#physical-properties" className={styles.tocLink}>Physical Properties</a>
+            <a href="#history-discovery" className={styles.tocLink}>History & Discovery</a>
+            <a href="#applications-uses" className={styles.tocLink}>Applications & Uses</a>
+          </nav>
+        </aside>
+      </div>
 
       {sidebarOpen && (
         <div className={styles.sidebarBackdrop} onClick={() => setSidebarOpen(false)} />

@@ -157,13 +157,13 @@ export default function AtomVisualization({
   compact = false,
 }: AtomVisualizationProps) {
   const maxShells = electronsPerShell.length;
-  // For compact mode (hover previews), zoom in more
-  const camZ = compact ? 2.5 + maxShells * 0.4 : 2 + maxShells * 0.6;
+  // Increase camera distance and reduce fov to prevent large atom clipping
+  const camZ = compact ? 2.5 + maxShells * 0.4 : 3 + maxShells * 0.8;
 
   return (
     <div style={{ width: '100%', height, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <Canvas
-        camera={{ position: [0, 0, camZ], fov: compact ? 45 : 40 }}
+        camera={{ position: [0, 0, camZ], fov: compact ? 45 : 35 }}
         gl={{ antialias: true, alpha: true }}
         style={{ background: 'transparent' }}
       >

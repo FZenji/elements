@@ -72,7 +72,35 @@
 
 .sidebarSearch:focus { border-color: var(--accent-cyan); }
 
-.sidebarNav { flex: 1; overflow-y: auto; padding: 0.5rem 0; }
+.sidebarNav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s;
+}
+
+.sidebarNav:hover {
+  scrollbar-color: var(--border-subtle) transparent;
+}
+
+.sidebarNav::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebarNav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebarNav::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+}
+.sidebarNav:hover::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+}
+.sidebarNav::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
 
 .sidebarGroup { margin-bottom: 0.25rem; }
 
@@ -119,18 +147,69 @@
   display: none;
 }
 
+/* Main Layout Wrapper */
+.layoutWrapper {
+  display: flex;
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 /* Main — centered content */
 .main {
   flex: 1;
   min-width: 0;
-  max-width: 800px;
   padding: 1.5rem 2rem 3rem;
+  max-width: 800px;
 }
 
-/* Top Bar — single row */
+/* Right TOC Sidebar */
+.tocSidebar {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 1.5rem;
+  height: fit-content;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  padding: 0 1rem 0 1.5rem;
+  display: none;
+}
+
+.tocTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.tocNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 1rem;
+}
+
+.tocLink {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.tocLink:hover {
+  color: var(--text-primary);
+}
+
+/* Top Bar — split layout */
 .topBar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
@@ -219,6 +298,7 @@
   border-radius: var(--radius-lg);
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
+  scroll-margin-top: 1.5rem;
 }
 
 .sectionTitle {
@@ -279,5 +359,12 @@
   .heroSymbol { font-size: 2.5rem; }
   .section { padding: 1rem; }
   .grid { grid-template-columns: 1fr 1fr; }
-  .topBar { padding-left: 3rem; }
+  .topBar { padding-left: 3rem; flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+  .tocSidebar { display: none !important; }
+}
+
+@media (min-width: 1024px) {
+  .tocSidebar {
+    display: flex;
+  }
 }
