@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Elements — Interactive Periodic Table
 
-## Getting Started
+A stunning, interactive periodic table of the elements built with Next.js and Three.js. Explore all 118 elements with beautiful 3D atom visualizations, detailed information, and smooth animations.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Interactive Periodic Table** — Full 18-column standard layout with all 118 elements
+- **3D Atom Visualizations** — Three.js-powered electron orbital animations with 2D/3D toggle
+- **Element Detail Pages** — Comprehensive information organized into clear sections
+- **Category Filters** — Highlight elements by group (Noble Gases, Transition Metals, etc.)
+- **Element Search** — Instant search by name, symbol, or atomic number
+- **Side Navigation** — Browse between elements without returning to the table
+- **Keyboard Shortcuts** — Full keyboard navigation (press `?` to see all shortcuts)
+- **Dark Theme** — Sleek black aesthetic with cyan-purple accent gradient
+- **Responsive Design** — Works beautifully on desktop, tablet, and mobile
+- **SEO Optimized** — Schema.org markup, dynamic sitemap, and per-page metadata
+
+## 🎮 Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `?` | Show shortcuts help |
+| `F` | Toggle filter panel |
+| `1-9` | Quick category filter |
+| `0` | Clear all filters |
+| `Space` | Pause/play animation |
+| `D` | Toggle 2D/3D mode |
+| `←` `→` | Navigate between elements |
+| `Esc` | Return to periodic table |
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **3D Graphics**: Three.js + React Three Fiber + Drei
+- **Animations**: Framer Motion
+- **Styling**: CSS Modules with custom properties
+- **Deployment**: Vercel
+
+## 📁 Project Structure
+
+```
+src/
+├── app/
+│   ├── [element]/    # Dynamic element detail pages
+│   ├── layout.tsx    # Root layout with SEO
+│   ├── page.tsx      # Periodic table home page
+│   ├── sitemap.ts    # Dynamic sitemap
+│   └── robots.ts     # Robots configuration
+├── components/
+│   ├── AtomVisualization.tsx  # Three.js atom renderer
+│   └── ElementClient.tsx      # Element detail client component
+└── data/
+    └── elements.ts   # All 118 elements with properties
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Favicon Prompt
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> A minimalist atomic symbol icon on a pure black background. A small glowing cyan nucleus at the center with two thin orbital rings crossing at angles, each with a tiny bright dot representing an electron. The orbits should glow with a gradient from cyan (#00D4FF) to purple (#7B2FBE). Ultra-clean, geometric, suitable for a 32×32 and 512×512 favicon. No text.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Developed by **Henry Tolenaar**
