@@ -29,6 +29,8 @@ export default function ElementClient({ element }: { element: ElementData }) {
   const router = useRouter();
   const [is3D, setIs3D] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [speed, setSpeed] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarSearch, setSidebarSearch] = useState('');
   const color = getCategoryColor(element.category);
@@ -119,8 +121,11 @@ export default function ElementClient({ element }: { element: ElementData }) {
           </nav>
         </aside>
         <main className={styles.main}>
-          {/* Top bar — nav arrows on right */}
+          {/* Top bar — back on left + nav arrows on right */}
           <div className={styles.topBar}>
+            <Link href="/" className={styles.navArrow} title="Back to Periodic Table">
+              ⌂ Back to Table
+            </Link>
             <div className={styles.navArrows}>
               {prevEl && (
                 <Link href={`/${prevEl.slug}`} className={styles.navArrow} title={prevEl.name}>
@@ -164,7 +169,14 @@ export default function ElementClient({ element }: { element: ElementData }) {
             </a>
           </div>
 
-          <div className={styles.heroViz}>
+          <div className={styles.heroViz} style={{ position: 'relative' }}>
+            <button
+              className={styles.openFullscreenBtn}
+              onClick={() => setIsFullscreen(true)}
+              title="Open Fullscreen"
+            >
+              ⛶
+            </button>
             <AtomVisualization
               protons={protons}
               neutrons={neutrons}
@@ -173,6 +185,7 @@ export default function ElementClient({ element }: { element: ElementData }) {
               isPlaying={isPlaying}
               color={color}
               height="300px"
+              speed={speed}
             />
             <div className={styles.vizControls}>
               <button
@@ -273,6 +286,54 @@ export default function ElementClient({ element }: { element: ElementData }) {
 
       {sidebarOpen && (
         <div className={styles.sidebarBackdrop} onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {isFullscreen && (
+        <div className={styles.fullscreenModal}>
+          <button className={styles.closeModalBtn} onClick={() => setIsFullscreen(false)} title="Close Fullscreen">
+            ×
+          </button>
+          <div className={styles.fullscreenContent}>
+            <AtomVisualization
+              protons={protons}
+              neutrons={neutrons}
+              electronsPerShell={element.electronsPerShell}
+              is3D={is3D}
+              isPlaying={isPlaying}
+              color={color}
+              height="100vh"
+              speed={speed}
+              enableControls={true}
+            />
+          </div>
+          <div className={styles.fullscreenControls}>
+            <button
+              className={`${styles.vizBtn} ${!is3D ? styles.vizBtnActive : ''}`}
+              onClick={() => setIs3D(false)}
+            >
+              2D
+            </button>
+            <button
+              className={`${styles.vizBtn} ${is3D ? styles.vizBtnActive : ''}`}
+              onClick={() => setIs3D(true)}
+            >
+              3D
+            </button>
+            <button
+              className={styles.vizBtn}
+              onClick={() => setIsPlaying(p => !p)}
+            >
+              {isPlaying ? '⏸ Pause' : '▶ Play'}
+            </button>
+            <button
+              className={styles.vizBtn}
+              onClick={() => setSpeed(s => s >= 4 ? 0.5 : s * 2)}
+              title="Change Speed"
+            >
+              {speed}x Speed
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -13,9 +13,10 @@ interface AtomSceneProps {
   isPlaying: boolean;
   color?: string;
   compact?: boolean;
+  speed?: number;
 }
 
-function Nucleus({ protons, neutrons, color, isPlaying }: { protons: number; neutrons: number; color: string; isPlaying: boolean }) {
+function Nucleus({ protons, neutrons, color, isPlaying, speed = 1 }: { protons: number; neutrons: number; color: string; isPlaying: boolean; speed: number }) {
   const ref = useRef<THREE.Group>(null);
   const col = new THREE.Color(color);
   const neutronCol = new THREE.Color('#aaaaaa');
@@ -23,8 +24,8 @@ function Nucleus({ protons, neutrons, color, isPlaying }: { protons: number; neu
   useFrame((_, delta) => {
     if (!isPlaying) return;
     if (ref.current) {
-      ref.current.rotation.x += delta * 0.2;
-      ref.current.rotation.y += delta * 0.3;
+      ref.current.rotation.x += delta * 0.2 * speed;
+      ref.current.rotation.y += delta * 0.3 * speed;
     }
   });
 
@@ -97,6 +98,7 @@ function ElectronShell({
   is3D: boolean;
   isPlaying: boolean;
   color: string;
+  speed: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const electronsRef = useRef<THREE.Group>(null);
@@ -118,7 +120,7 @@ function ElectronShell({
   useFrame((state, delta) => {
     if (!isPlaying) return;
     if (electronsRef.current) {
-      electronsRef.current.rotation.z += delta * speed;
+      electronsRef.current.rotation.z += delta * speed * speed; // First speed is local multiplier, second is prop
     }
   });
 
@@ -147,10 +149,11 @@ function ElectronShell({
   );
 }
 
-function AtomScene({ protons, neutrons, electronsPerShell, is3D, isPlaying, color = '#00d4ff', compact }: AtomSceneProps) {
+function AtomScene({ protons, neutrons, electronsPerShell, is3D, isPlaying, color = '#00d4ff', compact, speed = 1 }: AtomSceneProps) {
   const maxShells = electronsPerShell.length;
   const maxRadius = 0.8 + (maxShells - 1) * 0.55;
-  const scale = compact ? 1.5 / maxRadius : 2.5 / maxRadius;
+  // Calculate scale so radius fits within camera frustum (fov45, z=4 -> height~3.3)
+  const scale = compact ? 1.0 / maxRadius : 1.4 / maxRadius;
 
   return (
     <group scale={scale}>
@@ -158,7 +161,7 @@ function AtomScene({ protons, neutrons, electronsPerShell, is3D, isPlaying, colo
       <pointLight position={[5, 5, 5]} intensity={0.8} />
       <pointLight position={[-5, -5, -5]} intensity={0.3} color={color} />
 
-      <Nucleus protons={protons} neutrons={neutrons} color={color} isPlaying={isPlaying} />
+      <Nucleus protons={protons} neutrons={neutrons} color={color} isPlaying={isPlaying} speed={speed} />
 
       {electronsPerShell.map((count, i) => (
         <ElectronShell
@@ -169,6 +172,7 @@ function AtomScene({ protons, neutrons, electronsPerShell, is3D, isPlaying, colo
           is3D={is3D}
           isPlaying={isPlaying}
           color={color}
+          speed={speed}
         />
       ))}
     </group>
@@ -184,7 +188,11 @@ interface AtomVisualizationProps {
   color?: string;
   height?: string;
   compact?: boolean;
+  speed?: number;
+  enableControls?: boolean;
 }
+
+import { OrbitControls } from '@react-three/drei';
 
 export default function AtomVisualization({
   protons,
@@ -195,9 +203,11 @@ export default function AtomVisualization({
   color = '#00d4ff',
   height = '350px',
   compact = false,
+  speed = 1,
+  enableControls = false,
 }: AtomVisualizationProps) {
   return (
-    <div style={{ width: '100%', height, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+    <div style={{ width: '100%', height, borderRadius: 'var(--radius-lg)', overflow: 'hidden', position: 'relative' }}>
       <Canvas
         camera={{ position: [0, 0, compact ? 3.5 : 4], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
@@ -211,7 +221,9 @@ export default function AtomVisualization({
           isPlaying={isPlaying}
           color={color}
           compact={compact}
+          speed={speed}
         />
+        {enableControls && <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />}
       </Canvas>
     </div>
   );
