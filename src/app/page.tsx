@@ -256,7 +256,9 @@ export default function HomePage() {
             style={{
               position: 'fixed',
               left: Math.min(mousePos.x + 16, typeof window !== 'undefined' ? window.innerWidth - 320 : 600),
-              top: Math.min(mousePos.y + 16, typeof window !== 'undefined' ? window.innerHeight - 200 : 400),
+              top: typeof window !== 'undefined' && mousePos.y > window.innerHeight - 300 
+                ? mousePos.y - 280 
+                : mousePos.y + 16,
             }}
           >
             <div className={styles.tooltipHeader}>

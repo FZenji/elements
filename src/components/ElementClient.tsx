@@ -76,7 +76,8 @@ export default function ElementClient({ element }: { element: ElementData }) {
   const filteredElements = sidebarSearch
     ? elements.filter(el =>
         el.name.toLowerCase().includes(sidebarSearch.toLowerCase()) ||
-        el.symbol.toLowerCase().includes(sidebarSearch.toLowerCase())
+        el.symbol.toLowerCase().includes(sidebarSearch.toLowerCase()) ||
+        String(el.number).includes(sidebarSearch)
       )
     : elements;
 
