@@ -263,6 +263,8 @@ export default function HomePage() {
             </div>
             <div className={styles.tooltipAtom}>
               <AtomVisualization
+                protons={hoveredElement.number}
+                neutrons={Math.max(0, Math.round(hoveredElement.mass) - hoveredElement.number)}
                 electronsPerShell={hoveredElement.electronsPerShell}
                 is3D={false}
                 isPlaying={true}

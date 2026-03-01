@@ -33,6 +33,9 @@ export default function ElementClient({ element }: { element: ElementData }) {
   const [sidebarSearch, setSidebarSearch] = useState('');
   const color = getCategoryColor(element.category);
 
+  const protons = element.number;
+  const neutrons = Math.max(0, Math.round(element.mass) - element.number);
+
   const currentIdx = elements.findIndex(e => e.number === element.number);
   const prevEl = currentIdx > 0 ? elements[currentIdx - 1] : null;
   const nextEl = currentIdx < elements.length - 1 ? elements[currentIdx + 1] : null;
@@ -77,54 +80,47 @@ export default function ElementClient({ element }: { element: ElementData }) {
         ☰
       </button>
 
-      {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
-        <div className={styles.sidebarHeader}>
-          <Link href="/" className={styles.backLink}>
-            ← Periodic Table
-          </Link>
-          <input
-            type="text"
-            placeholder="Filter elements..."
-            value={sidebarSearch}
-            onChange={(e) => setSidebarSearch(e.target.value)}
-            className={styles.sidebarSearch}
-          />
-        </div>
-        <nav className={styles.sidebarNav}>
-          {Object.entries(grouped).map(([cat, els]) => (
-            <div key={cat} className={styles.sidebarGroup}>
-              <div
-                className={styles.sidebarGroupTitle}
-                style={{ color: getCategoryColor(cat as ElementCategory) }}
-              >
-                {CATEGORIES[cat as ElementCategory]?.label || cat}
-              </div>
-              {els.map(el => (
-                <Link
-                  key={el.number}
-                  href={`/${el.slug}`}
-                  className={`${styles.sidebarItem} ${el.number === element.number ? styles.sidebarActive : ''}`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <span className={styles.sidebarSymbol}>{el.symbol}</span>
-                  <span className={styles.sidebarName}>{el.name}</span>
-                  <span className={styles.sidebarNum}>#{el.number}</span>
-                </Link>
-              ))}
-            </div>
-          ))}
-        </nav>
-      </aside>
-
       {/* Main Content and TOC */}
       <div className={styles.layoutWrapper}>
+        {/* Sidebar */}
+        <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
+          <div className={styles.sidebarHeader}>
+            <input
+              type="text"
+              placeholder="Filter elements..."
+              value={sidebarSearch}
+              onChange={(e) => setSidebarSearch(e.target.value)}
+              className={styles.sidebarSearch}
+            />
+          </div>
+          <nav className={styles.sidebarNav}>
+            {Object.entries(grouped).map(([cat, els]) => (
+              <div key={cat} className={styles.sidebarGroup}>
+                <div
+                  className={styles.sidebarGroupTitle}
+                  style={{ color: getCategoryColor(cat as ElementCategory) }}
+                >
+                  {CATEGORIES[cat as ElementCategory]?.label || cat}
+                </div>
+                {els.map(el => (
+                  <Link
+                    key={el.number}
+                    href={`/${el.slug}`}
+                    className={`${styles.sidebarItem} ${el.number === element.number ? styles.sidebarActive : ''}`}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <span className={styles.sidebarSymbol}>{el.symbol}</span>
+                    <span className={styles.sidebarName}>{el.name}</span>
+                    <span className={styles.sidebarNum}>#{el.number}</span>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </nav>
+        </aside>
         <main className={styles.main}>
-          {/* Top bar — back on left + nav arrows on right */}
+          {/* Top bar — nav arrows on right */}
           <div className={styles.topBar}>
-            <Link href="/" className={styles.navArrow} title="Back to Periodic Table">
-              ⌂ Back to Table
-            </Link>
             <div className={styles.navArrows}>
               {prevEl && (
                 <Link href={`/${prevEl.slug}`} className={styles.navArrow} title={prevEl.name}>
@@ -170,6 +166,8 @@ export default function ElementClient({ element }: { element: ElementData }) {
 
           <div className={styles.heroViz}>
             <AtomVisualization
+              protons={protons}
+              neutrons={neutrons}
               electronsPerShell={element.electronsPerShell}
               is3D={is3D}
               isPlaying={isPlaying}
